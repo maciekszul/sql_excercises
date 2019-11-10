@@ -27,6 +27,10 @@ https://sebastianraschka.com/Articles/2014_sqlite_in_python_tutorial.html
 https://docs.python.org/2/library/sqlite3.html
 """
 
+"""
+PRIMARY KEY serves a purpose of the index, aparently speeds up some operations
+"""
+
 table_headers_type = {
     "PRIMARY KEY": {"Subject_ID":"TEXT"},
     "first_name": "TEXT", 
@@ -54,23 +58,36 @@ with open(json_path) as json_data:
 connection = db_connection(db_path)
 cursor = connection.cursor()
 
+"""
+SQLite requires ? when adding value to the query, the column can be done by
+formatting the string.
+"""
 
 for row in data[:70]:
+    """
+    Iterating over the JSON file, reading in the entries and cramming them to
+    the database. Inserting the ID (PRIMARY KEY) first so things are easier
+    later.
+    """
     id_pk = list(table_headers_type["PRIMARY KEY"].keys())[0]
     id_val = row[id_pk]
-    table_update = "INSERT OR IGNORE INTO {table_name} ({column_name}) VALUES (?)".format(
+    query = "INSERT OR IGNORE INTO {table_name} ({column_name}) VALUES (?)".format(
         table_name=table_name,
         column_name=id_pk
     )
-    cursor.execute(table_update, (id_val,))
+    cursor.execute(query, (id_val,))
     for key in row.keys():
+        """
+        Each key in entry corresponds to the column. The row is easily found by 
+        providing an ID. Iteration over entries for flexibility.
+        """
         if key != "PRIMARY KEY":
-            table_update = "UPDATE {table_name} SET {column_name}=(?) WHERE {pk_name}=(?)".format(
+            query = "UPDATE {table_name} SET {column_name}=(?) WHERE {pk_name}=(?)".format(
                 table_name=table_name,
                 column_name=key,
                 pk_name=id_pk
             )
-            cursor.execute(table_update, (row[key], id_val,))
+            cursor.execute(query, (row[key], id_val,))
 
 connection.commit()
 connection.close()
