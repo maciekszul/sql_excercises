@@ -1,31 +1,13 @@
 import sqlite3
 from sqlite3 import Error
+from sqlfunc import db_connection
 
 """
 Creating a SQL database using a JSON dataset with personal information
 Following the: 
 https://www.sqlitetutorial.net/sqlite-python/creating-database/
-https://sebastianraschka.com/Articles/2014_sqlite_in_python_tutorial.html
 https://docs.python.org/2/library/sqlite3.html
 """
-
-
-def db_connection(path, *args):
-    """
-    Connect with the database.
-    :path: path to the database (*.db file), using ':memory:' a database 
-    is created in RAM.
-    """
-    print(sqlite3.version)
-    connection = None
-    try:
-        connection = sqlite3.connect(path, *args)
-        print("Connected to {}".format(path))
-    except Error as error:
-        print(error)
-    
-    return connection
-
 
 db_path = "test_database.db"
 

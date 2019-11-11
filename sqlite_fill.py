@@ -1,29 +1,13 @@
 import sqlite3
 from sqlite3 import Error
+from sqlfunc import db_connection
 import json
 
-
-def db_connection(path, *args):
-    """
-    Connect with the database.
-    :path: path to the database (*.db file), using ':memory:' a database 
-    is created in RAM.
-    """
-    print(sqlite3.version)
-    connection = None
-    try:
-        connection = sqlite3.connect(path, *args)
-        print("Connected to {}".format(path))
-    except Error as error:
-        print(error)
-    
-    return connection
 
 """
 Creating a SQL database using a JSON dataset with personal information
 Following the: 
 https://www.sqlitetutorial.net/sqlite-python/creating-database/
-https://sebastianraschka.com/Articles/2014_sqlite_in_python_tutorial.html
 https://docs.python.org/2/library/sqlite3.html
 """
 
@@ -63,7 +47,7 @@ SQLite requires ? when adding value to the query, the column can be done by
 formatting the string.
 """
 
-for row in data[:70]:
+for row in data:
     """
     Iterating over the JSON file, reading in the entries and cramming them to
     the database. Inserting the ID (PRIMARY KEY) first so things are easier
